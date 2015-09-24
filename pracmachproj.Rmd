@@ -127,16 +127,17 @@ testing <- testing[-1,]
 
 ### Random Forests Prediction Algorithm 
 
-I used the Random Forest Algorithm on the data and used a Confusion Matrix to determine the accuracy rate of the algorithm. 
+I used the Random Forest Algorithm on the data and used a Confusion Matrix to determine the accuracy rate of the algorithm. We use a 5 fold cross validation when applying the algorithm for predicting the in sample error so the error should be small. 
 ``` {r cache = TRUE}
-modFitB1 <- randomForest(classe ~. , data=trainData)
+controlRf <- trainControl(method="cv", 5)
+modFitB1 <- randomForest(classe ~. , data=trainData, trControl=controlRf)
 # Predicting in-sample error:
 predictionsB1 <- predict(modFitB1, testData, type = "class")
 c2 <- confusionMatrix(predictionsB1, testData$classe)
 c2
 ```
 
-We see from the Confusion Matrices that the Random Forest yielded an accuracy rate of `r c2$overall['Accuracy']`, which are better results than a Decision Tree. This result is not surprising as it is an aggregation of many decision trees. 
+We see from the Confusion Matrices that the Random Forest yielded an accuracy rate of `r c2$overall['Accuracy']` and an in-sample error of `r 1-c2$overall['Accuracy']`, which are better results than a Decision Tree. This result is not surprising as it is an aggregation of many decision trees. 
 
 ## Conclusions and Submission 
 Finally, I used the provided Test Set out-of-sample error.
